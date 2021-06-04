@@ -65,14 +65,13 @@ class Vector3d(object):
         calibration routine, sets cal
         '''
         self.update()
-        maxvec = self._vector[:]                # Initialise max and min lists with current values
-        minvec = self._vector[:]
+        vecs = [self._vector[:]]                                # Initialise list with current values
         while not stopfunc():
             waitfunc()
             self.update()
-            maxvec = list(map(max, maxvec, self._vector))
-            minvec = list(map(min, minvec, self._vector))
-        self.cal = tuple(map(lambda a, b: (a + b)/2, maxvec, minvec))
+            vecs.append(self._vector[:])                        # Append list with vector
+        vecs_sum = tuple(map(lambda *args: sum(args), *vecs))   # Sum vectors into one.
+        self.cal = tuple([i/len(vecs) for i in vecs_sum])       # Devide by length to find average.
 
     @property
     def _calvector(self):
